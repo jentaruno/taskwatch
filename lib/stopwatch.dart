@@ -76,10 +76,13 @@ class _StopwatchState extends State<Stopwatch> {
     });
   }
 
-  void addLaps() {
-    String time = "$digitHours:$digitMinutes:$digitSeconds";
-    String title = stopwatchNameInput.text;
-    widget.onAddTime(title, time);
+  // If time is > 0s, add time
+  void recordTime() {
+    if (hours > 0 || minutes > 0 || seconds > 0) {
+      String time = "$digitHours:$digitMinutes:$digitSeconds";
+      String title = stopwatchNameInput.text;
+      widget.onAddTime(title, time);
+    }
   }
 
   @override
@@ -169,7 +172,7 @@ class _StopwatchState extends State<Stopwatch> {
                         IconButton(
                           onPressed: () {
                             if (_formKey.currentState!.validate()) {
-                              addLaps();
+                              recordTime();
                             }
                           },
                           color: Colors.teal,

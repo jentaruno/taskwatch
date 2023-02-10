@@ -4,7 +4,6 @@ import 'tasks.dart';
 
 class TimeGrid extends StatefulWidget {
   final TaskList taskList;
-
   const TimeGrid({Key? key, required this.taskList}) : super(key: key);
 
   @override
@@ -12,6 +11,9 @@ class TimeGrid extends StatefulWidget {
 }
 
 class _TimeGridState extends State<TimeGrid> {
+  final key = GlobalKey<ScaffoldState>();
+  final TextEditingController _searchQuery = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return GridView.builder(
