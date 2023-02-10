@@ -7,13 +7,37 @@ class TaskFields {
   static const String times = "times";
 }
 
+class TaskList {
+  List<Task> taskList = [];
+  TaskList();
+
+  Task get(int i) {
+    return taskList[i];
+  }
+
+  int length() {
+    return taskList.length;
+  }
+
+  // Add new task, unless task already exists in task list, add time to that task.
+  void addTask(Task task) {
+    List<String> taskNames = taskList.map((e) => e.getName()).toList();
+    int i = taskNames.indexOf(task.getName());
+    if (i != -1) {
+      taskList[i].addTime(task.getTime(0));
+    } else {
+      taskList.add(task);
+    }
+  }
+}
+
 class Task {
   final int? id;
   final String title;
-  List<String> times = [];
+  List<String> timesDates = [];
 
   Task({this.id, required this.title, String? time}) {
-    times.add(time!);
+    timesDates.add(time!);
   }
 
   // Get name
@@ -21,32 +45,32 @@ class Task {
     return title;
   }
 
-  // Get quickest time
-  String getTopTime() {
-    return times[0];
+  // Get number of recorded times
+  int getNumberOfTimes() {
+    return timesDates.length;
   }
 
-  // Get all times
-  List<String> getTimes() {
-    return times;
+  // Get time from given index
+  String getTime(int index) {
+    return timesDates[index];
   }
 
   // Add a new time. Place new time in list, in order of speed
   void addTime(String time) {
     int index = 0;
-    for (; index < times.length; index++) {
-      if (times[index].compareTo(time) >= 0) {
+    for (; index < timesDates.length; index++) {
+      if (timesDates[index].compareTo(time) >= 0) {
         break;
       }
     }
-    times.insert(index, time);
+    timesDates.insert(index, time);
   }
 
   // Database function, convert to JSON
   Map<String, Object?> toJSON() => {
         TaskFields.id: id,
         TaskFields.title: title,
-        TaskFields.times: times.join(",")
+        TaskFields.times: timesDates.join(",")
       };
 
   // Database function, convert from JSON

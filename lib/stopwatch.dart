@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 class Stopwatch extends StatefulWidget {
   final Function onAddTime;
+
   const Stopwatch({Key? key, required this.onAddTime}) : super(key: key);
 
   @override
@@ -11,6 +12,11 @@ class Stopwatch extends StatefulWidget {
 
 class _StopwatchState extends State<Stopwatch> {
   final stopwatchNameInput = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+
+  String placeholder = "Edit task title";
+  Color placeholderColor = Colors.white12;
+
   int seconds = 0, minutes = 0, hours = 0;
   String digitSeconds = "00", digitMinutes = "00", digitHours = "00";
   Timer? timer;
@@ -18,6 +24,7 @@ class _StopwatchState extends State<Stopwatch> {
   String time = "";
   String title = "";
 
+  // Start stopwatch
   void start() {
     if (started) {
       return;
@@ -45,8 +52,6 @@ class _StopwatchState extends State<Stopwatch> {
         digitMinutes = (minutes >= 10) ? "$minutes" : "0$minutes";
       });
     });
-
-
   }
 
   void pause() {
@@ -83,26 +88,35 @@ class _StopwatchState extends State<Stopwatch> {
       children: [
         SizedBox(
           width: 200.0,
-          child: TextField(
-            decoration: const InputDecoration(
-              focusColor: Colors.white,
-              enabledBorder: UnderlineInputBorder(
-                borderSide: BorderSide.none,
+          child: Form(
+            key: _formKey,
+            child: TextFormField(
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return "Please title your task";
+                }
+                return null;
+              },
+              decoration: InputDecoration(
+                focusColor: Colors.white,
+                enabledBorder: const UnderlineInputBorder(
+                  borderSide: BorderSide.none,
+                ),
+                focusedBorder: const UnderlineInputBorder(
+                  borderSide: BorderSide.none,
+                ),
+                hintText: placeholder,
+                hintStyle: TextStyle(
+                  color: placeholderColor,
+                ),
               ),
-              focusedBorder: UnderlineInputBorder(
-                borderSide: BorderSide.none,
+              style: const TextStyle(
+                color: Colors.white,
               ),
-              hintText: "Edit timer title",
-              hintStyle: TextStyle(
-                color: Colors.white12,
-              ),
+              cursorColor: Colors.white,
+              textAlign: TextAlign.center,
+              controller: stopwatchNameInput,
             ),
-            style: const TextStyle(
-              color: Colors.white,
-            ),
-            cursorColor: Colors.white,
-            textAlign: TextAlign.center,
-            controller: stopwatchNameInput,
           ),
         ),
         const SizedBox(
@@ -144,12 +158,20 @@ class _StopwatchState extends State<Stopwatch> {
                                 icon: const Icon(Icons.pause),
                               )
                             : IconButton(
-                                onPressed: start,
+                                onPressed: () {
+                                  if (_formKey.currentState!.validate()) {
+                                    start();
+                                  }
+                                },
                                 color: Colors.teal,
                                 icon: const Icon(Icons.play_arrow),
                               ),
                         IconButton(
-                          onPressed: addLaps,
+                          onPressed: () {
+                            if (_formKey.currentState!.validate()) {
+                              addLaps();
+                            }
+                          },
                           color: Colors.teal,
                           icon: const Icon(Icons.flag),
                         ),
