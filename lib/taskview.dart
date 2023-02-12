@@ -74,7 +74,7 @@ class _TaskScreenState extends State<TaskScreen> {
                             widget.task.getDate(index),
                             style: const TextStyle(
                               fontSize: 20,
-                              color: Colors.white,
+                              color: Colors.white12,
                             ),
                           )
                         ]));

@@ -5,7 +5,7 @@ import 'tasks.dart';
 class TimeGrid extends StatefulWidget {
   final TaskList taskList;
 
-  TimeGrid({Key? key, required this.taskList}) : super(key: key);
+  const TimeGrid({Key? key, required this.taskList}) : super(key: key);
 
   @override
   State<TimeGrid> createState() => _TimeGridState();
@@ -30,17 +30,23 @@ class _TimeGridState extends State<TimeGrid> {
     itemsList = widget.taskList.getTasks().map((e) => e.getName()).toList();
 
     return Column(children: [
-      TextField(
+      Padding(
+        padding: EdgeInsets.all(16.0),
+          child: TextField(
         controller: _searchQuery,
         focusNode: _textFocusNode,
         cursorColor: Colors.white,
-        decoration: const InputDecoration(
+        decoration: InputDecoration(
             prefixIcon: Icon(Icons.search),
             prefixIconColor: Colors.white30,
             hintText: "Search tasks",
             hintStyle: TextStyle(color: Colors.white12),
-            fillColor: Colors.white,
-            border: InputBorder.none),
+            filled: true,
+            fillColor: Colors.black12,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10.0),
+              borderSide: BorderSide.none,
+            )),
         onChanged: (value) {
           setState(() {
             itemsListSearch = itemsList
@@ -50,7 +56,7 @@ class _TimeGridState extends State<TimeGrid> {
             if (_searchQuery.text.isNotEmpty && itemsListSearch.isEmpty) {}
           });
         },
-      ),
+      )),
       _searchQuery.text.isNotEmpty && itemsListSearch.isEmpty
           ? const Text("No results found")
           : GridView.builder(

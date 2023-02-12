@@ -74,7 +74,7 @@ class _HomeAppState extends State<HomeApp> {
               children: [
                 Stopwatch(onAddTime: callback),
                 const SizedBox(
-                  height: 20.0,
+                  height: 40.0,
                 ),
                 TimeGrid(
                   taskList: taskList,
