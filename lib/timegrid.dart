@@ -47,11 +47,11 @@ class _TimeGridState extends State<TimeGrid> {
                 .where((element) =>
                     element.toLowerCase().contains(value.toLowerCase()))
                 .toList();
-            if (_searchQuery!.text.isNotEmpty && itemsListSearch!.isEmpty) {}
+            if (_searchQuery.text.isNotEmpty && itemsListSearch.isEmpty) {}
           });
         },
       ),
-      _searchQuery!.text.isNotEmpty && itemsListSearch!.isEmpty
+      _searchQuery.text.isNotEmpty && itemsListSearch.isEmpty
           ? const Text("No results found")
           : GridView.builder(
               gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
@@ -62,8 +62,8 @@ class _TimeGridState extends State<TimeGrid> {
               ),
               padding: const EdgeInsets.all(20),
               shrinkWrap: true,
-              itemCount: _searchQuery!.text.isNotEmpty
-                  ? itemsListSearch!.length
+              itemCount: _searchQuery.text.isNotEmpty
+                  ? itemsListSearch.length
                   : itemsList.length,
               itemBuilder: (context, index) {
                 return GestureDetector(
@@ -88,8 +88,8 @@ class _TimeGridState extends State<TimeGrid> {
                                 fontWeight: FontWeight.w600,
                               )),
                           Text(
-                              _searchQuery!.text.isNotEmpty
-                                  ? itemsListSearch![index]
+                              _searchQuery.text.isNotEmpty
+                                  ? itemsListSearch[index]
                                   : itemsList[index],
                               style: const TextStyle(
                                 color: Colors.white,
