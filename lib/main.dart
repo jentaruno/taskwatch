@@ -16,7 +16,11 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'TaskWatch',
       theme: ThemeData(
+        brightness: Brightness.dark,
+        primaryIconTheme: IconThemeData(color: Colors.teal),
+        primaryColor: Colors.teal,
         primarySwatch: Colors.teal,
+        canvasColor: Colors.black87
       ),
       home: const HomeApp(),
     );
@@ -45,7 +49,6 @@ class _HomeAppState extends State<HomeApp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.black87,
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           elevation: 0,

@@ -15,7 +15,6 @@ class _StopwatchState extends State<Stopwatch> {
   final _formKey = GlobalKey<FormState>();
 
   String placeholder = "Edit task title";
-  Color placeholderColor = Colors.white12;
 
   int seconds = 0, minutes = 0, hours = 0;
   String digitSeconds = "00", digitMinutes = "00", digitHours = "00";
@@ -109,14 +108,9 @@ class _StopwatchState extends State<Stopwatch> {
                   borderSide: BorderSide.none,
                 ),
                 hintText: placeholder,
-                hintStyle: TextStyle(
-                  color: placeholderColor,
-                ),
+                hintStyle: const TextStyle(color: Colors.white12)
+
               ),
-              style: const TextStyle(
-                color: Colors.white,
-              ),
-              cursorColor: Colors.white,
               textAlign: TextAlign.center,
               controller: stopwatchNameInput,
             ),
@@ -138,7 +132,6 @@ class _StopwatchState extends State<Stopwatch> {
               children: [
                 Text("$digitHours:$digitMinutes:$digitSeconds",
                     style: const TextStyle(
-                      color: Colors.white,
                       fontSize: 70.0,
                       fontWeight: FontWeight.w600,
                     )),
@@ -151,13 +144,13 @@ class _StopwatchState extends State<Stopwatch> {
                       children: [
                         IconButton(
                           onPressed: reset,
-                          color: Colors.teal,
+                          color: Theme.of(context).colorScheme.primary,
                           icon: const Icon(Icons.restart_alt),
                         ),
                         (started)
                             ? IconButton(
                                 onPressed: pause,
-                                color: Colors.teal,
+                                color: Theme.of(context).colorScheme.primary,
                                 icon: const Icon(Icons.pause),
                               )
                             : IconButton(
@@ -166,7 +159,7 @@ class _StopwatchState extends State<Stopwatch> {
                                     start();
                                   }
                                 },
-                                color: Colors.teal,
+                                color: Theme.of(context).colorScheme.primary,
                                 icon: const Icon(Icons.play_arrow),
                               ),
                         IconButton(
@@ -175,7 +168,7 @@ class _StopwatchState extends State<Stopwatch> {
                               recordTime();
                             }
                           },
-                          color: Colors.teal,
+                          color: Theme.of(context).colorScheme.primary,
                           icon: const Icon(Icons.flag),
                         ),
                       ],

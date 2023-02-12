@@ -21,6 +21,10 @@ class TaskList {
 
   TaskList();
 
+  List<Task> getTasks() {
+    return taskList;
+  }
+
   Task get(int i) {
     return taskList[i];
   }
