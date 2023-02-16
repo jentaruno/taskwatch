@@ -36,7 +36,7 @@ class HomeApp extends StatefulWidget {
 class _HomeAppState extends State<HomeApp> {
   // MAIN STATES
   String title = "TaskWatch";
-  TaskList taskList = TaskList();
+  List<Task> taskList = [];
 
   // STOPWATCH STATES
   final stopwatchNameInput = TextEditingController();
@@ -114,23 +114,39 @@ class _HomeAppState extends State<HomeApp> {
     if (hours > 0 || minutes > 0 || seconds > 0) {
       String time = "$digitHours:$digitMinutes:$digitSeconds";
       String taskTitle = stopwatchNameInput.text;
-      TaskList newTaskList = taskList;
-      newTaskList
-          .add(Task(id: taskList.length(), title: taskTitle, time: time));
+
+      Task task = Task(id: taskList.length, title: taskTitle, time: time);
+      List<Task> newTaskList = taskList;
+      List<String> taskNames = newTaskList.map((e) => e.getName()).toList();
+      int i = taskNames.indexOf(task.getName());
+      if (i != -1) {
+        taskList[i].addTime(task.getTime(0), getTodayDate());
+      } else {
+        taskList.add(task);
+      }
+
       setState(() {
         taskList = newTaskList;
-        itemsList = newTaskList.getTasks().map((e) => e.getName()).toList();
+        itemsList = newTaskList.map((e) => e.getName()).toList();
       });
     }
   }
 
   deleteTaskCallback(Task task) {
-    TaskList newTaskList = taskList;
+    List<Task> newTaskList = taskList;
     newTaskList.remove(task);
     setState(() {
       taskList = newTaskList;
-      itemsList = newTaskList.getTasks().map((e) => e.getName()).toList();
+      itemsList = newTaskList.map((e) => e.getName()).toList();
     });
+  }
+
+  deleteTaskTimeCallback(Task task, int index) {
+    // TODO: implement callback for deleting a task time
+  }
+
+  renameTaskCallback(Task task, String newName) {
+    // TODO: implement callback for renaming a task title
   }
 
   @override
@@ -317,9 +333,11 @@ class _HomeAppState extends State<HomeApp> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) => TaskScreen(
-                                            task: taskList.get(index),
-                                            onDeleteTask: deleteTaskCallback
-                                        ))),
+                                              task: taskList[index],
+                                              onDeleteTask: deleteTaskCallback,
+                                              onDeleteTaskTime: deleteTaskTimeCallback,
+                                              onRenameTask: renameTaskCallback,
+                                            ))),
                                 child: GridTile(
                                     child: Container(
                                   decoration: BoxDecoration(
@@ -329,7 +347,7 @@ class _HomeAppState extends State<HomeApp> {
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      Text(taskList.get(index).getTime(0),
+                                      Text(taskList[index].getTime(0),
                                           style: const TextStyle(
                                             color: Colors.white,
                                             fontSize: 36.0,

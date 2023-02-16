@@ -16,41 +16,6 @@ class TaskFields {
   static const String dates = "dates";
 }
 
-class TaskList {
-  List<Task> taskList = [];
-
-  TaskList();
-
-  List<Task> getTasks() {
-    return taskList;
-  }
-
-  Task get(int i) {
-    return taskList[i];
-  }
-
-  int length() {
-    return taskList.length;
-  }
-
-  // Add new task, unless task already exists in task list, add time to that task.
-  void add(Task task) {
-    List<String> taskNames = taskList.map((e) => e.getName()).toList();
-    int i = taskNames.indexOf(task.getName());
-    if (i != -1) {
-      taskList[i].addTime(task.getTime(0), getTodayDate());
-    } else {
-      taskList.add(task);
-    }
-  }
-
-  // Remove task
-  void remove(Task task) {
-    taskList.remove(task);
-  }
-
-}
-
 class Task {
   final int? id;
   final String title;

@@ -4,8 +4,16 @@ import 'package:countup/tasks.dart';
 class TaskScreen extends StatefulWidget {
   final Task task;
   final Function onDeleteTask;
+  final Function onDeleteTaskTime;
+  final Function onRenameTask;
 
-  const TaskScreen({Key? key, required this.task, required this.onDeleteTask})
+  const TaskScreen({
+    Key? key,
+    required this.task,
+    required this.onDeleteTask,
+    required this.onDeleteTaskTime,
+    required this.onRenameTask,
+  })
       : super(key: key);
 
   @override
@@ -115,7 +123,12 @@ class _TaskScreenState extends State<TaskScreen> {
                                   fontSize: 20,
                                   color: Colors.white12,
                                 ),
-                              )
+                              ),
+                              IconButton(
+                                onPressed: widget.onDeleteTaskTime(widget.task, index),
+                                color: Colors.white12,
+                                icon: const Icon(Icons.delete),
+                              ),
                             ]));
                   },
                 ),
