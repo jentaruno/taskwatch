@@ -34,11 +34,11 @@ class HomeApp extends StatefulWidget {
 }
 
 class _HomeAppState extends State<HomeApp> {
-  // Main states
+  // MAIN STATES
   String title = "TaskWatch";
   TaskList taskList = TaskList();
 
-  // Stopwatch states
+  // STOPWATCH STATES
   final stopwatchNameInput = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   String placeholder = "Edit task title";
@@ -49,7 +49,7 @@ class _HomeAppState extends State<HomeApp> {
   String time = "";
   String taskTitle = "";
 
-  // Time grid states
+  // TIME GRID STATES
   List<String> itemsList = [];
   List<String> itemsListSearch = [];
   final FocusNode _textFocusNode = FocusNode();
@@ -124,11 +124,12 @@ class _HomeAppState extends State<HomeApp> {
     }
   }
 
-  deleteTaskCallback(task) {
+  deleteTaskCallback(Task task) {
     TaskList newTaskList = taskList;
     newTaskList.remove(task);
     setState(() {
       taskList = newTaskList;
+      itemsList = newTaskList.getTasks().map((e) => e.getName()).toList();
     });
   }
 
@@ -316,7 +317,9 @@ class _HomeAppState extends State<HomeApp> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) => TaskScreen(
-                                            task: taskList.get(index)))),
+                                            task: taskList.get(index),
+                                            onDeleteTask: deleteTaskCallback
+                                        ))),
                                 child: GridTile(
                                     child: Container(
                                   decoration: BoxDecoration(

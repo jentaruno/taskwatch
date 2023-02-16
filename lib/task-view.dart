@@ -3,8 +3,10 @@ import 'package:countup/tasks.dart';
 
 class TaskScreen extends StatefulWidget {
   final Task task;
+  final Function onDeleteTask;
 
-  const TaskScreen({Key? key, required this.task}) : super(key: key);
+  const TaskScreen({Key? key, required this.task, required this.onDeleteTask})
+      : super(key: key);
 
   @override
   State<TaskScreen> createState() => _TaskScreenState();
@@ -13,12 +15,7 @@ class TaskScreen extends StatefulWidget {
 class _TaskScreenState extends State<TaskScreen> {
   final taskNameInput = TextEditingController();
   final String title = "TaskWatch";
-  List<String> titleInputText = ["",""];
-
-  Task removeTask() {
-    Navigator.pop(context);
-    return widget.task;
-  }
+  List<String> titleInputText = ["", ""];
 
   @override
   Widget build(BuildContext context) {
@@ -62,8 +59,7 @@ class _TaskScreenState extends State<TaskScreen> {
                         borderSide: BorderSide.none,
                       ),
                       hintText: "Edit task title",
-                      hintStyle: TextStyle(color: Colors.white12)
-                  ),
+                      hintStyle: TextStyle(color: Colors.white12)),
                   textAlign: TextAlign.center,
                   controller: taskNameInput,
                 ),
@@ -77,17 +73,20 @@ class _TaskScreenState extends State<TaskScreen> {
                   ),
                 ),
                 SizedBox(
-                  width: 300,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      IconButton(
-                        onPressed: removeTask,
-                        color: Theme.of(context).colorScheme.primary,
-                        icon: const Icon(Icons.delete),
-                      ),
-                    ],
-                  )),
+                    width: 300,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        IconButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                            widget.onDeleteTask(widget.task);
+                          },
+                          color: Theme.of(context).colorScheme.primary,
+                          icon: const Icon(Icons.delete),
+                        ),
+                      ],
+                    )),
                 const SizedBox(
                   height: 20.0,
                 ),
@@ -98,27 +97,26 @@ class _TaskScreenState extends State<TaskScreen> {
                   shrinkWrap: true,
                   itemCount: widget.task.getNumberOfTimes(),
                   itemBuilder: (context, index) {
-                    return
-                      Padding(
+                    return Padding(
                         padding: const EdgeInsets.all(20),
-                          child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            widget.task.getTime(index),
-                            style: const TextStyle(
-                              fontSize: 40,
-                              color: Colors.white,
-                            ),
-                          ),
-                          Text(
-                            widget.task.getDate(index),
-                            style: const TextStyle(
-                              fontSize: 20,
-                              color: Colors.white12,
-                            ),
-                          )
-                        ]));
+                        child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                widget.task.getTime(index),
+                                style: const TextStyle(
+                                  fontSize: 40,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              Text(
+                                widget.task.getDate(index),
+                                style: const TextStyle(
+                                  fontSize: 20,
+                                  color: Colors.white12,
+                                ),
+                              )
+                            ]));
                   },
                 ),
               ],
