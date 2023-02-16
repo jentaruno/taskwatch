@@ -34,7 +34,7 @@ class TaskList {
   }
 
   // Add new task, unless task already exists in task list, add time to that task.
-  void addTask(Task task) {
+  void add(Task task) {
     List<String> taskNames = taskList.map((e) => e.getName()).toList();
     int i = taskNames.indexOf(task.getName());
     if (i != -1) {
@@ -43,6 +43,12 @@ class TaskList {
       taskList.add(task);
     }
   }
+
+  // Remove task
+  void remove(Task task) {
+    taskList.remove(task);
+  }
+
 }
 
 class Task {
@@ -55,6 +61,12 @@ class Task {
     times.add(time!);
     dates.add(getTodayDate());
   }
+
+  // Remove recorded time
+  void removeTime(int index) {
+    times.removeAt(index);
+  }
+
 
   // Get name
   String getName() {
@@ -71,6 +83,7 @@ class Task {
     return times[index];
   }
 
+  // Get date from given index
   String getDate(int index) {
     return dates[index];
   }

@@ -11,12 +11,20 @@ class TaskScreen extends StatefulWidget {
 }
 
 class _TaskScreenState extends State<TaskScreen> {
+  final taskNameInput = TextEditingController();
   final String title = "TaskWatch";
+  List<String> titleInputText = ["",""];
+
+  Task removeTask() {
+    Navigator.pop(context);
+    return widget.task;
+  }
 
   @override
   Widget build(BuildContext context) {
+    taskNameInput.text = widget.task.getName();
+    titleInputText[0] = widget.task.getName();
     return Scaffold(
-        backgroundColor: Colors.black87,
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           elevation: 0,
@@ -31,12 +39,33 @@ class _TaskScreenState extends State<TaskScreen> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 // Task title
-                Text(
-                  widget.task.getName(),
-                  style: const TextStyle(
-                    fontSize: 20,
-                    color: Colors.white,
+                TextFormField(
+                  onChanged: (value) {
+                    setState(() {
+                      titleInputText[0] = titleInputText[1];
+                      titleInputText[1] = value;
+                    });
+                  },
+                  onEditingComplete: () {
+                    if (titleInputText[1].isEmpty) {
+                      setState(() {
+                        titleInputText[1] = titleInputText[0];
+                      });
+                    }
+                  },
+                  decoration: const InputDecoration(
+                      focusColor: Colors.white,
+                      enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide.none,
+                      ),
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide.none,
+                      ),
+                      hintText: "Edit task title",
+                      hintStyle: TextStyle(color: Colors.white12)
                   ),
+                  textAlign: TextAlign.center,
+                  controller: taskNameInput,
                 ),
                 // Top time
                 Text(
@@ -47,6 +76,18 @@ class _TaskScreenState extends State<TaskScreen> {
                     fontWeight: FontWeight.w600,
                   ),
                 ),
+                SizedBox(
+                  width: 300,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      IconButton(
+                        onPressed: removeTask,
+                        color: Theme.of(context).colorScheme.primary,
+                        icon: const Icon(Icons.delete),
+                      ),
+                    ],
+                  )),
                 const SizedBox(
                   height: 20.0,
                 ),
