@@ -16,6 +16,35 @@ class TaskFields {
   static const String dates = "dates";
 }
 
+class TaskList {
+  List<Task> taskList = [];
+
+  TaskList();
+
+  List<Task> getTasks() {
+    return taskList;
+  }
+
+  Task get(int i) {
+    return taskList[i];
+  }
+
+  int length() {
+    return taskList.length;
+  }
+
+  // Add new task, unless task already exists in task list, add time to that task.
+  void addTask(Task task) {
+    List<String> taskNames = taskList.map((e) => e.getName()).toList();
+    int i = taskNames.indexOf(task.getName());
+    if (i != -1) {
+      taskList[i].addTime(task.getTime(0), getTodayDate());
+    } else {
+      taskList.add(task);
+    }
+  }
+}
+
 class Task {
   final int? id;
   final String title;
@@ -26,12 +55,6 @@ class Task {
     times.add(time!);
     dates.add(getTodayDate());
   }
-
-  // Remove recorded time
-  void removeTime(int index) {
-    times.removeAt(index);
-  }
-
 
   // Get name
   String getName() {
@@ -48,7 +71,6 @@ class Task {
     return times[index];
   }
 
-  // Get date from given index
   String getDate(int index) {
     return dates[index];
   }
