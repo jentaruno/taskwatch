@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'tasks.dart';
 
 class TasksProvider with ChangeNotifier {
   List<Task> _taskList = [];
+  int _num = 1;
 
   List<Task> get taskList => _taskList;
   int get length => _taskList.length;
+  String get num => _num.toString();
 
   // Add new task, unless task already exists in task list, add time to that task.
   void addTask(Task task) {
