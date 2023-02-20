@@ -1,7 +1,7 @@
 import 'package:countup/providers/tasks_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'screens/home_screen.dart';
+import 'home_screen.dart';
 
 void main() {
   runApp(MultiProvider(

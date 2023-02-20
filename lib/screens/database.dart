@@ -39,7 +39,7 @@ class TasksDatabase {
     return task.copy(id: id);
   }
 
-  Future<Task> readTask(int id) async {
+  Future<Task> readNote(int id) async {
     final db = await instance.database;
     final maps = await db.query(
       tableTasks,
@@ -71,13 +71,13 @@ class TasksDatabase {
     );
   }
 
-  Future<int> delete(String title) async {
+  Future<int> delete(int id) async {
     final db = await instance.database;
 
     return await db.delete(
         tableTasks,
-        where: "${TaskFields.title} = ?",
-        whereArgs: [title]
+        where: "${TaskFields.id} = ?",
+        whereArgs: [id]
     );
   }
 
@@ -85,5 +85,4 @@ class TasksDatabase {
     final db = await instance.database;
     db.close();
   }
-
 }
