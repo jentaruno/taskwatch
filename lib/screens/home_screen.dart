@@ -62,10 +62,6 @@ class _TimeGridState extends State<TimeGrid> {
   final FocusNode _textFocusNode = FocusNode();
   final TextEditingController _searchQuery = TextEditingController();
 
-  deleteTaskCallback(Task task) {
-    context.read<TasksProvider>().deleteTask(task);
-  }
-
   // @override
   // void dispose() {
   //   _textFocusNode.dispose();
@@ -75,7 +71,7 @@ class _TimeGridState extends State<TimeGrid> {
 
   @override
   Widget build(BuildContext context) {
-    itemsList = context.watch<TasksProvider>().taskList.map((e) => e.getName()).toList();
+    itemsList = widget.taskList.map((e) => e.getName()).toList();
 
     return MultiProvider(
         providers: [
@@ -130,9 +126,7 @@ class _TimeGridState extends State<TimeGrid> {
                         context,
                         MaterialPageRoute(
                             builder: (context) => TaskScreen(
-                                task: context.watch<TasksProvider>().taskList[index],
-                              onDeleteTask: deleteTaskCallback,
-                            ))),
+                                task: widget.taskList[index]))),
                     child: GridTile(
                         child: Container(
                           decoration: BoxDecoration(
@@ -144,7 +138,7 @@ class _TimeGridState extends State<TimeGrid> {
                             children: [
                               Text(
                                   widget.taskList[index]
-                                      .getSpecialTime("fast"),
+                                      .getTime(0),
                                   style: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 36.0,
@@ -186,16 +180,6 @@ class _StopwatchState extends State<Stopwatch> {
   bool started = false;
   String time = "";
   String title = "";
-  String _previousText = "";
-
-  // Prevent empty title
-  void preventEmpty() {
-    if (stopwatchNameInput.text.isNotEmpty) {
-      _previousText = stopwatchNameInput.text;
-    } else {
-      stopwatchNameInput.text = _previousText;
-    }
-  }
 
   // Start stopwatch
   void start() {
@@ -256,7 +240,6 @@ class _StopwatchState extends State<Stopwatch> {
       String title = stopwatchNameInput.text;
       List<Task> taskList = context.read<TasksProvider>().taskList;
       Task task = Task(id: taskList.length, title: title, time: time);
-      reset();
       context.read<TasksProvider>().addTask(task);
     }
   }
@@ -274,7 +257,6 @@ class _StopwatchState extends State<Stopwatch> {
             child: Form(
               key: _formKey,
               child: TextFormField(
-                onEditingComplete: preventEmpty,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return "Please title your task";
