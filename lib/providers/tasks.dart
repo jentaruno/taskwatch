@@ -87,6 +87,11 @@ class Task {
     dates.insert(index, date);
   }
 
+  // Delete recorded time at given index
+  void deleteTime(int index) {
+    times.removeAt(index);
+  }
+
   // Database function, convert to JSON
   Map<String, Object?> toJSON() => {
         TaskFields.id: id,

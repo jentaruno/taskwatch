@@ -32,4 +32,10 @@ class TasksProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  void deleteTaskTime(Task task, int index) {
+    int i = _taskList.indexOf(task);
+    _taskList[i].deleteTime(index);
+    notifyListeners();
+  }
+
 }
