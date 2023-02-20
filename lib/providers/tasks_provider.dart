@@ -21,4 +21,15 @@ class TasksProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  void deleteTask(Task task) {
+    _taskList.remove(task);
+    notifyListeners();
+  }
+
+  void renameTask(Task task, String newName) {
+    int i = _taskList.indexOf(task);
+    _taskList[i].title = newName;
+    notifyListeners();
+  }
+
 }

@@ -47,7 +47,7 @@ class TaskList {
 
 class Task {
   final int? id;
-  final String title;
+  String title;
   List<String> times = [];
   List<String> dates = [];
 
