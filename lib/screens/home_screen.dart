@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'dart:async';
 import '../providers/tasks.dart';
+import 'database.dart';
 import 'task_view.dart';
 
 class HomeApp extends StatelessWidget {
@@ -47,9 +48,10 @@ class HomeApp extends StatelessWidget {
 }
 
 class TimeGrid extends StatefulWidget {
-  final List<Task> taskList;
+  late List<Task> taskList;
+  bool isLoading = false;
 
-  const TimeGrid({Key? key, required this.taskList}) : super(key: key);
+  TimeGrid({Key? key, required this.taskList}) : super(key: key);
 
   @override
   State<TimeGrid> createState() => _TimeGridState();
@@ -61,6 +63,22 @@ class _TimeGridState extends State<TimeGrid> {
   List<String> itemsListSearch = [];
   final FocusNode _textFocusNode = FocusNode();
   final TextEditingController _searchQuery = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    loadAllTasks();
+  }
+
+  void loadAllTasks() async {
+    setState(() {
+      widget.isLoading = true;
+    });
+    widget.taskList = await TasksDatabase.instance.readAllTasks();
+    setState(() {
+      widget.isLoading = false;
+    });
+  }
 
   deleteTaskCallback(Task task) {
     context.read<TasksProvider>().deleteTask(task);
