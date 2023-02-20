@@ -16,35 +16,6 @@ class TaskFields {
   static const String dates = "dates";
 }
 
-class TaskList {
-  List<Task> taskList = [];
-
-  TaskList();
-
-  List<Task> getTasks() {
-    return taskList;
-  }
-
-  Task get(int i) {
-    return taskList[i];
-  }
-
-  int length() {
-    return taskList.length;
-  }
-
-  // Add new task, unless task already exists in task list, add time to that task.
-  void addTask(Task task) {
-    List<String> taskNames = taskList.map((e) => e.getName()).toList();
-    int i = taskNames.indexOf(task.getName());
-    if (i != -1) {
-      taskList[i].addTime(task.getTime(0), getTodayDate());
-    } else {
-      taskList.add(task);
-    }
-  }
-}
-
 class Task {
   final int? id;
   String title;
@@ -71,20 +42,43 @@ class Task {
     return times[index];
   }
 
+  String getSpecialTime(String type) {
+    switch (type) {
+      case "fast":
+        String fastestTime = times[0];
+        for (int i = 1; i < times.length; i++) {
+          if (DateTime.parse('1970-01-01 ${times[i]}')
+              .difference(DateTime.parse('1970-01-01 $fastestTime'))
+              .isNegative) {
+            fastestTime = times[i];
+          }
+        }
+        return fastestTime;
+      case "average":
+        int totalSeconds = 0;
+        for (String time in times) {
+          DateTime dateTime = DateTime.parse('1970-01-01 $time');
+          totalSeconds += dateTime.hour * 3600 + dateTime.minute * 60 + dateTime.second;
+        }
+
+        int averageSeconds = (totalSeconds / times.length).ceil();
+        int hours = averageSeconds ~/ 3600;
+        int minutes = (averageSeconds % 3600) ~/ 60;
+        int seconds = averageSeconds % 60;
+
+        return '${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
+      default: return "...";
+    }
+  }
+
   String getDate(int index) {
     return dates[index];
   }
 
-  // Add a new time. Place new time in list, in order of speed
+  // Add a new time. Place new time in list (newest to oldest)
   void addTime(String time, String date) {
-    int index = 0;
-    for (; index < times.length; index++) {
-      if (times[index].compareTo(time) >= 0) {
-        break;
-      }
-    }
-    times.insert(index, time);
-    dates.insert(index, date);
+    times.insert(0, time);
+    dates.insert(0, date);
   }
 
   // Delete recorded time at given index
