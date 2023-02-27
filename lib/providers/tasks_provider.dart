@@ -15,8 +15,10 @@ class TasksProvider with ChangeNotifier {
   }
 
   // Load tasks from database
-  Future<void> loadTasks() async {
+  Future<List<Task>> loadTasks() async {
     _taskList = await TasksDatabase.instance.readAllTasks();
+    notifyListeners();
+    return _taskList;
   }
 
   // Add new task, unless task already exists in task list, add time to that task.
