@@ -9,8 +9,8 @@ String getTodayDate() {
 }
 
 class TaskFields {
-  static const List<String> values = [id, title, times];
-  static const String id = "_id";
+  static const List<String> values = [id, title, times, dates];
+  static const String id = "id";
   static const String title = "title";
   static const String times = "times";
   static const String dates = "dates";
@@ -23,7 +23,9 @@ class Task {
   List<String> dates = [];
 
   Task({this.id, required this.title, String? time}) {
-    times.add(time!);
+    if (time != null) {
+      times.add(time);
+    };
     dates.add(getTodayDate());
   }
 
@@ -115,8 +117,8 @@ class Task {
   Task copy({
     int? id,
     String? title,
-    List<String>? times,
-    List<String>? dates,
+    String? times,
+    String? dates,
   }) {
     Task taskCopy = Task(id: id ?? this.id, title: title ?? this.title);
     if (times != null && dates != null) {

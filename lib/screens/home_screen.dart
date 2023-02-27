@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'dart:async';
 import '../providers/tasks.dart';
+import 'database.dart';
 import 'task_view.dart';
 
 class HomeApp extends StatelessWidget {
@@ -49,7 +50,7 @@ class HomeApp extends StatelessWidget {
 class TimeGrid extends StatefulWidget {
   final List<Task> taskList;
 
-  const TimeGrid({Key? key, required this.taskList}) : super(key: key);
+  TimeGrid({Key? key, required this.taskList}) : super(key: key);
 
   @override
   State<TimeGrid> createState() => _TimeGridState();
@@ -57,10 +58,33 @@ class TimeGrid extends StatefulWidget {
 
 class _TimeGridState extends State<TimeGrid> {
   final key = GlobalKey<ScaffoldState>();
-  List<String> itemsList = [];
+  bool isLoading = false;
+  late List<String> itemsList = [];
   List<String> itemsListSearch = [];
   final FocusNode _textFocusNode = FocusNode();
   final TextEditingController _searchQuery = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    loadAllTasks();
+  }
+
+  @override
+  void dispose() {
+    TasksDatabase.instance.close();
+    super.dispose();
+  }
+
+  Future loadAllTasks() async {
+    setState(() => isLoading = true);
+    await context.read<TasksProvider>().loadTasks();
+    setState(() => isLoading = false);
+  }
+
+  deleteTaskCallback(Task task) {
+    context.read<TasksProvider>().deleteTask(task);
+  }
 
   // @override
   // void dispose() {
@@ -71,13 +95,17 @@ class _TimeGridState extends State<TimeGrid> {
 
   @override
   Widget build(BuildContext context) {
-    itemsList = widget.taskList.map((e) => e.getName()).toList();
+    itemsList = context.watch<TasksProvider>().taskList.map((e) => e.getName()).toList();
 
     return MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (_) => TasksProvider()),
         ],
-        child: Column(children: [
+        child:
+        isLoading
+            ? CircularProgressIndicator()
+            :
+        Column(children: [
           Padding(
               padding: const EdgeInsets.all(16.0),
               child: TextField(
@@ -110,7 +138,7 @@ class _TimeGridState extends State<TimeGrid> {
               ? const Text("No results found")
               : GridView.builder(
               gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                maxCrossAxisExtent: 500,
+                maxCrossAxisExtent: 200,
                 childAspectRatio: (2 / 1),
                 crossAxisSpacing: 20,
                 mainAxisSpacing: 20,
@@ -126,7 +154,9 @@ class _TimeGridState extends State<TimeGrid> {
                         context,
                         MaterialPageRoute(
                             builder: (context) => TaskScreen(
-                                task: widget.taskList[index]))),
+                                task: context.watch<TasksProvider>().taskList[index],
+                              onDeleteTask: deleteTaskCallback,
+                            ))),
                     child: GridTile(
                         child: Container(
                           decoration: BoxDecoration(
@@ -138,7 +168,7 @@ class _TimeGridState extends State<TimeGrid> {
                             children: [
                               Text(
                                   widget.taskList[index]
-                                      .getTime(0),
+                                      .getSpecialTime("fast"),
                                   style: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 36.0,
@@ -180,6 +210,16 @@ class _StopwatchState extends State<Stopwatch> {
   bool started = false;
   String time = "";
   String title = "";
+  String _previousText = "";
+
+  // Prevent empty title
+  void preventEmpty() {
+    if (stopwatchNameInput.text.isNotEmpty) {
+      _previousText = stopwatchNameInput.text;
+    } else {
+      stopwatchNameInput.text = _previousText;
+    }
+  }
 
   // Start stopwatch
   void start() {
@@ -240,6 +280,7 @@ class _StopwatchState extends State<Stopwatch> {
       String title = stopwatchNameInput.text;
       List<Task> taskList = context.read<TasksProvider>().taskList;
       Task task = Task(id: taskList.length, title: title, time: time);
+      reset();
       context.read<TasksProvider>().addTask(task);
     }
   }
@@ -257,6 +298,7 @@ class _StopwatchState extends State<Stopwatch> {
             child: Form(
               key: _formKey,
               child: TextFormField(
+                onEditingComplete: preventEmpty,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return "Please title your task";
