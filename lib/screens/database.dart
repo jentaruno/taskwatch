@@ -68,7 +68,7 @@ class TasksDatabase {
     return db.update(
         tableTasks,
         task.toJSON(),
-        where: "${TaskFields.id} = ?",
+        where: '${TaskFields.id} = ?',
         whereArgs: [task.id]
     );
   }
