@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
           primaryIconTheme: IconThemeData(color: Colors.teal),
           primaryColor: Colors.teal,
           primarySwatch: Colors.teal,
-          canvasColor: Colors.black87),
+          canvasColor: Colors.white10),
       initialRoute: "/",
       routes: {
         '/': (context) => HomeApp(),

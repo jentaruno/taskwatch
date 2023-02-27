@@ -46,15 +46,12 @@ class _TaskScreenState extends State<TaskScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.black87,
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           elevation: 0,
-          centerTitle: false,
-          title: Text(title),
         ),
         body: Padding(
-            padding: const EdgeInsets.all(36.0),
+            padding: const EdgeInsets.all(16.0),
             child: SingleChildScrollView(
                 child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -62,6 +59,7 @@ class _TaskScreenState extends State<TaskScreen> {
               children: [
                 // Task title
                 TextFormField(
+                  style: TextStyle(fontSize: 24.0),
                   onEditingComplete: handleRename,
                   decoration: const InputDecoration(
                       focusColor: Colors.white,
@@ -130,7 +128,7 @@ class _TaskScreenState extends State<TaskScreen> {
                                     widget.task.getDate(index),
                                     style: const TextStyle(
                                       fontSize: 20,
-                                      color: Colors.white12,
+                                      color: Colors.white30,
                                     ),
                                   ),
                                   (widget.task.getNumberOfTimes() > 1)

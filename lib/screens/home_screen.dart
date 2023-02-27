@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'dart:async';
 import '../providers/tasks.dart';
 import 'database.dart';
-import 'task_view.dart';
+import 'task_screen.dart';
 
 class HomeApp extends StatelessWidget {
   const HomeApp({Key? key}) : super (key: key);
@@ -29,7 +29,7 @@ class HomeApp extends StatelessWidget {
           title: const Text("TaskWatch"),
         ),
         body: Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(8.0),
             child: SingleChildScrollView(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -106,19 +106,18 @@ class _TimeGridState extends State<TimeGrid> {
             ? CircularProgressIndicator()
             :
         Column(children: [
-          Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: TextField(
+          TextField(
                 controller: _searchQuery,
                 focusNode: _textFocusNode,
                 cursorColor: Colors.white,
                 decoration: InputDecoration(
+                    contentPadding: EdgeInsets.only(top: 5.0, bottom: 5.0),
                     prefixIcon: const Icon(Icons.search),
                     prefixIconColor: Colors.white30,
                     hintText: "Search tasks",
                     hintStyle: const TextStyle(color: Colors.white12),
                     filled: true,
-                    fillColor: Colors.black12,
+                    fillColor: Colors.black26,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10.0),
                       borderSide: BorderSide.none,
@@ -133,17 +132,17 @@ class _TimeGridState extends State<TimeGrid> {
                         itemsListSearch.isEmpty) {}
                   });
                 },
-              )),
+              ),
+          SizedBox(height: 10),
           _searchQuery.text.isNotEmpty && itemsListSearch.isEmpty
               ? const Text("No results found")
               : GridView.builder(
               gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                maxCrossAxisExtent: 200,
+                maxCrossAxisExtent: 300,
                 childAspectRatio: (2 / 1),
-                crossAxisSpacing: 20,
-                mainAxisSpacing: 20,
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10,
               ),
-              padding: const EdgeInsets.all(20),
               shrinkWrap: true,
               itemCount: _searchQuery.text.isNotEmpty
                   ? itemsListSearch.length
@@ -298,6 +297,7 @@ class _StopwatchState extends State<Stopwatch> {
             child: Form(
               key: _formKey,
               child: TextFormField(
+                style: TextStyle(fontSize: 24.0),
                 onEditingComplete: preventEmpty,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -328,7 +328,7 @@ class _StopwatchState extends State<Stopwatch> {
             height: 350,
             decoration: const BoxDecoration(
               shape: BoxShape.circle,
-              color: Colors.black12,
+              color: Colors.black26,
             ),
             child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
