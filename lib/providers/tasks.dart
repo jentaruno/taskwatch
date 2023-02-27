@@ -25,7 +25,7 @@ class Task {
   Task({this.id, required this.title, String? time}) {
     if (time != null) {
       times.add(time);
-    };
+    }
     dates.add(getTodayDate());
   }
 

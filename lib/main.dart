@@ -22,13 +22,13 @@ class MyApp extends StatelessWidget {
       title: 'TaskWatch',
       theme: ThemeData(
           brightness: Brightness.dark,
-          primaryIconTheme: IconThemeData(color: Colors.teal),
+          primaryIconTheme: const IconThemeData(color: Colors.teal),
           primaryColor: Colors.teal,
           primarySwatch: Colors.teal,
           canvasColor: Colors.white10),
       initialRoute: "/",
       routes: {
-        '/': (context) => HomeApp(),
+        '/': (context) => const HomeApp(),
       },
     );
   }

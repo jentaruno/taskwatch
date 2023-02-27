@@ -45,7 +45,14 @@ class _TaskScreenState extends State<TaskScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return GestureDetector(
+        onTap: () {
+      FocusScopeNode currentFocus = FocusScope.of(context);
+      if (!currentFocus.hasPrimaryFocus) {
+        currentFocus.unfocus();
+      }
+    },
+    child: Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           elevation: 0,
@@ -59,7 +66,7 @@ class _TaskScreenState extends State<TaskScreen> {
               children: [
                 // Task title
                 TextFormField(
-                  style: TextStyle(fontSize: 24.0),
+                  style: const TextStyle(fontSize: 24.0),
                   onEditingComplete: handleRename,
                   decoration: const InputDecoration(
                       focusColor: Colors.white,
@@ -91,7 +98,7 @@ class _TaskScreenState extends State<TaskScreen> {
                         IconButton(
                           onPressed: () {
                             Navigator.pop(context);
-                            Future.delayed(Duration(milliseconds: 50), () {
+                            Future.delayed(const Duration(milliseconds: 50), () {
                               widget.onDeleteTask(widget.task);
                             });
                           },
@@ -141,13 +148,13 @@ class _TaskScreenState extends State<TaskScreen> {
                                             icon: const Icon(Icons.delete),
                                           ),
                                         )
-                                      : SizedBox(width: 24.0)
+                                      : const SizedBox(width: 24.0)
                                 ],
                               ),
                             ]));
                   },
                 ),
               ],
-            ))));
+            )))));
   }
 }

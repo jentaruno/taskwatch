@@ -4,11 +4,9 @@ import 'tasks.dart';
 
 class TasksProvider with ChangeNotifier {
   List<Task> _taskList = [];
-  int _num = 1;
 
   List<Task> get taskList => _taskList;
   int get length => _taskList.length;
-  String get num => _num.toString();
 
   TasksProvider() {
     loadTasks();

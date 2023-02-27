@@ -11,7 +11,14 @@ class HomeApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return GestureDetector(
+        onTap: () {
+      FocusScopeNode currentFocus = FocusScope.of(context);
+      if (!currentFocus.hasPrimaryFocus) {
+        currentFocus.unfocus();
+      }
+    },
+    child: Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           elevation: 0,
@@ -43,14 +50,14 @@ class HomeApp extends StatelessWidget {
                       taskList: context.watch<TasksProvider>().taskList,
                     )
                   ],
-                ))));
+                )))));
   }
 }
 
 class TimeGrid extends StatefulWidget {
   final List<Task> taskList;
 
-  TimeGrid({Key? key, required this.taskList}) : super(key: key);
+  const TimeGrid({Key? key, required this.taskList}) : super(key: key);
 
   @override
   State<TimeGrid> createState() => _TimeGridState();
@@ -103,7 +110,7 @@ class _TimeGridState extends State<TimeGrid> {
         ],
         child:
         isLoading
-            ? CircularProgressIndicator()
+            ? const CircularProgressIndicator()
             :
         Column(children: [
           TextField(
@@ -111,7 +118,7 @@ class _TimeGridState extends State<TimeGrid> {
                 focusNode: _textFocusNode,
                 cursorColor: Colors.white,
                 decoration: InputDecoration(
-                    contentPadding: EdgeInsets.only(top: 5.0, bottom: 5.0),
+                    contentPadding: const EdgeInsets.only(top: 5.0, bottom: 5.0),
                     prefixIcon: const Icon(Icons.search),
                     prefixIconColor: Colors.white30,
                     hintText: "Search tasks",
@@ -133,17 +140,18 @@ class _TimeGridState extends State<TimeGrid> {
                   });
                 },
               ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           _searchQuery.text.isNotEmpty && itemsListSearch.isEmpty
               ? const Text("No results found")
               : GridView.builder(
               gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                 maxCrossAxisExtent: 300,
-                childAspectRatio: (2 / 1),
+                childAspectRatio: (5 / 3),
                 crossAxisSpacing: 10,
                 mainAxisSpacing: 10,
               ),
               shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
               itemCount: _searchQuery.text.isNotEmpty
                   ? itemsListSearch.length
                   : itemsList.length,
@@ -200,8 +208,6 @@ class Stopwatch extends StatefulWidget {
 class _StopwatchState extends State<Stopwatch> {
   final stopwatchNameInput = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-
-  String placeholder = "Edit task title";
 
   int seconds = 0, minutes = 0, hours = 0;
   String digitSeconds = "00", digitMinutes = "00", digitHours = "00";
@@ -293,28 +299,32 @@ class _StopwatchState extends State<Stopwatch> {
       child: Column(
         children: [
           SizedBox(
-            width: 200.0,
+            width: 300.0,
+
             child: Form(
               key: _formKey,
               child: TextFormField(
-                style: TextStyle(fontSize: 24.0),
+                style: const TextStyle(fontSize: 24.0),
                 onEditingComplete: preventEmpty,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return "Please title your task";
                   }
+                  if (value.length > 30) {
+                    return "Title is 30 characters max";
+                  }
                   return null;
                 },
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                     focusColor: Colors.white,
-                    enabledBorder: const UnderlineInputBorder(
+                    enabledBorder: UnderlineInputBorder(
                       borderSide: BorderSide.none,
                     ),
-                    focusedBorder: const UnderlineInputBorder(
+                    focusedBorder: UnderlineInputBorder(
                       borderSide: BorderSide.none,
                     ),
-                    hintText: placeholder,
-                    hintStyle: const TextStyle(color: Colors.white12)),
+                    hintText: "Edit task title",
+                    hintStyle: TextStyle(color: Colors.white12)),
                 textAlign: TextAlign.center,
                 controller: stopwatchNameInput,
               ),
