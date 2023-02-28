@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:countup/providers/tasks.dart';
 import 'package:provider/provider.dart';
-import 'package:countup/providers/tasks_provider.dart';
+import '../providers/tasks_provider.dart';
+import '../providers/tasks.dart';
 
 class TaskScreen extends StatefulWidget {
   final Task task;

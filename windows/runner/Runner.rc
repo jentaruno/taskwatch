@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "com.example" "\0"
-            VALUE "FileDescription", "countup" "\0"
+            VALUE "FileDescription", "taskwatch" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "countup" "\0"
+            VALUE "InternalName", "taskwatch" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2023 com.example. All rights reserved." "\0"
-            VALUE "OriginalFilename", "countup.exe" "\0"
-            VALUE "ProductName", "countup" "\0"
+            VALUE "OriginalFilename", "taskwatch.exe" "\0"
+            VALUE "ProductName", "TaskWatch" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

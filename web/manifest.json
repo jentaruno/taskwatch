@@ -1,6 +1,6 @@
 {
-    "name": "countup",
-    "short_name": "countup",
+    "name": "taskwatch",
+    "short_name": "taskwatch",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

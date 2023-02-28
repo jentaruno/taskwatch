@@ -1,6 +1,6 @@
-import 'package:countup/screens/database.dart';
 import 'package:flutter/material.dart';
 import 'tasks.dart';
+import 'database.dart';
 
 class TasksProvider with ChangeNotifier {
   List<Task> _taskList = [];

@@ -1,9 +1,9 @@
-import 'package:countup/providers/tasks_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'dart:async';
 import '../providers/tasks.dart';
-import 'database.dart';
+import '../providers/tasks_provider.dart';
+import '../providers/database.dart';
 import 'task_screen.dart';
 
 class HomeApp extends StatelessWidget {

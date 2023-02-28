@@ -1,4 +1,4 @@
-import 'package:countup/providers/tasks.dart';
+import 'tasks.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
