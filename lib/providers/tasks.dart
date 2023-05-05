@@ -2,10 +2,28 @@ import 'package:intl/intl.dart';
 
 const String tableTasks = "tasks";
 
-String getTodayDate() {
-  var now = DateTime.now();
+// convert DateTime object to MM/dd/yyyy format string
+String dateToString(DateTime dt) {
   var formatter = DateFormat('MM/dd/yyyy');
-  return formatter.format(now);
+  return formatter.format(dt);
+}
+
+// convert String to DateTime, time 00:00:00
+DateTime stringToDate(String s) {
+  DateFormat formatter = DateFormat('MM/dd/yyyy');
+  // parse the input date string into a DateTime object
+  DateTime dateTime = formatter.parse(s);
+  DateTime dateWithZeroTime = DateTime(dateTime.year, dateTime.month, dateTime.day);
+
+  return dateWithZeroTime;
+}
+
+String formatTimeDifference(DateTime startTime, DateTime endTime) {
+  Duration difference = endTime.difference(startTime);
+  int hours = difference.inHours;
+  int minutes = difference.inMinutes.remainder(60);
+  int seconds = difference.inSeconds.remainder(60);
+  return "${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}";
 }
 
 class TaskFields {
@@ -20,13 +38,13 @@ class Task {
   final int? id;
   String title;
   List<String> times = [];
-  List<String> dates = [];
+  List<DateTime> dates = [];
 
   Task({this.id, required this.title, String? time}) {
     if (time != null) {
       times.add(time);
     }
-    dates.add(getTodayDate());
+    dates.add(DateTime.now());
   }
 
   // Get name
@@ -74,11 +92,11 @@ class Task {
   }
 
   String getDate(int index) {
-    return dates[index];
+    return dateToString(dates[index]);
   }
 
   // Add a new time. Place new time in list (newest to oldest)
-  void addTime(String time, String date) {
+  void addTime(String time, DateTime date) {
     times.insert(0, time);
     dates.insert(0, date);
   }
@@ -93,7 +111,7 @@ class Task {
         TaskFields.id: id,
         TaskFields.title: title,
         TaskFields.times: times.join(","),
-        TaskFields.dates: dates.join(",")
+        TaskFields.dates: dates.map((e) => dateToString(e)).join(",")
       };
 
   // Database function, convert from JSON
@@ -105,7 +123,8 @@ class Task {
     String loadedTimesString = json[TaskFields.times] as String;
     List<String> loadedTimes = loadedTimesString.split(",");
     String loadedDatesString = json[TaskFields.dates] as String;
-    List<String> loadedDates = loadedDatesString.split(",");
+    List loadedDates =
+    loadedDatesString.split(",").map((e) => stringToDate(e)).toList();
     for (int i = 0; i < loadedTimes.length; i++) {
       loadedTask.addTime(loadedTimes[i], loadedDates[i]);
     }
@@ -123,7 +142,7 @@ class Task {
     Task taskCopy = Task(id: id ?? this.id, title: title ?? this.title);
     if (times != null && dates != null) {
       for (int i = 0; i < times.length; i++) {
-        taskCopy.addTime(times[i], dates[i]);
+        taskCopy.addTime(times[i], stringToDate(dates[i]));
       }
     }
     return taskCopy;

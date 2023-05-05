@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'dart:async';
@@ -6,6 +7,7 @@ import '../providers/tasks_provider.dart';
 import '../providers/database.dart';
 import 'task_screen.dart';
 
+// HOME SCREEN
 class HomeApp extends StatelessWidget {
   const HomeApp({Key? key}) : super (key: key);
 
@@ -54,6 +56,7 @@ class HomeApp extends StatelessWidget {
   }
 }
 
+// TIME GRID
 class TimeGrid extends StatefulWidget {
   final List<Task> taskList;
 
@@ -92,13 +95,6 @@ class _TimeGridState extends State<TimeGrid> {
   deleteTaskCallback(Task task) {
     context.read<TasksProvider>().deleteTask(task);
   }
-
-  // @override
-  // void dispose() {
-  //   _textFocusNode.dispose();
-  //   _searchQuery!.dispose();
-  //   super.dispose();
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -197,6 +193,7 @@ class _TimeGridState extends State<TimeGrid> {
   }
 }
 
+// STOPWATCH
 class Stopwatch extends StatefulWidget {
   const Stopwatch({Key? key}) : super(key: key);
 
@@ -204,7 +201,6 @@ class Stopwatch extends StatefulWidget {
   State<Stopwatch> createState() => _StopwatchState();
 }
 
-// STOPWATCH
 class _StopwatchState extends State<Stopwatch> {
   final stopwatchNameInput = TextEditingController();
   final _formKey = GlobalKey<FormState>();
@@ -215,16 +211,13 @@ class _StopwatchState extends State<Stopwatch> {
   bool started = false;
   String time = "";
   String title = "";
-  String _previousText = "";
+  DateTime startTime = DateTime.now();
 
-  // Prevent empty title
-  void preventEmpty() {
-    if (stopwatchNameInput.text.isNotEmpty) {
-      _previousText = stopwatchNameInput.text;
-    } else {
-      stopwatchNameInput.text = _previousText;
-    }
-  }
+  // WidgetsBinding.instance.addObserver(
+  // LifecycleEventHandler(resumeCallBack: () async => setState(() {
+  //   String actualTime = formatTimeDifference(startTime, DateTime.now());
+  // }))
+  // );
 
   // Start stopwatch
   void start() {
@@ -232,6 +225,7 @@ class _StopwatchState extends State<Stopwatch> {
       return;
     }
     started = true;
+    startTime = DateTime.now();
     timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       int localSeconds = seconds + 1;
       int localMinutes = minutes;
@@ -305,7 +299,6 @@ class _StopwatchState extends State<Stopwatch> {
               key: _formKey,
               child: TextFormField(
                 style: const TextStyle(fontSize: 24.0),
-                onEditingComplete: preventEmpty,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return "Please title your task";
@@ -348,7 +341,8 @@ class _StopwatchState extends State<Stopwatch> {
                       style: const TextStyle(
                         fontSize: 70.0,
                         fontWeight: FontWeight.w600,
-                      )),
+                      ),
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -360,12 +354,14 @@ class _StopwatchState extends State<Stopwatch> {
                                 onPressed: reset,
                                 color: Theme.of(context).colorScheme.primary,
                                 icon: const Icon(Icons.restart_alt),
+                                iconSize: 30.0,
                               ),
                               (started)
                                   ? IconButton(
                                 onPressed: pause,
                                 color: Theme.of(context).colorScheme.primary,
                                 icon: const Icon(Icons.pause),
+                                iconSize: 60.0,
                               )
                                   : IconButton(
                                 onPressed: () {
@@ -375,6 +371,7 @@ class _StopwatchState extends State<Stopwatch> {
                                 },
                                 color: Theme.of(context).colorScheme.primary,
                                 icon: const Icon(Icons.play_arrow),
+                                iconSize: 60.0,
                               ),
                               IconButton(
                                 onPressed: () {
@@ -384,6 +381,7 @@ class _StopwatchState extends State<Stopwatch> {
                                 },
                                 color: Theme.of(context).colorScheme.primary,
                                 icon: const Icon(Icons.flag),
+                                iconSize: 30.0,
                               ),
                             ],
                           )),
@@ -394,5 +392,33 @@ class _StopwatchState extends State<Stopwatch> {
         ],
       ),
     );
+  }
+}
+
+class LifecycleEventHandler extends WidgetsBindingObserver {
+  final AsyncCallback resumeCallBack;
+  final AsyncCallback suspendingCallBack;
+
+  LifecycleEventHandler({
+    required this.resumeCallBack,
+    required this.suspendingCallBack,
+  });
+
+  @override
+  Future<void> didChangeAppLifecycleState(AppLifecycleState state) async {
+    switch (state) {
+      case AppLifecycleState.resumed:
+        if (resumeCallBack != null) {
+          await resumeCallBack();
+        }
+        break;
+      case AppLifecycleState.inactive:
+      case AppLifecycleState.paused:
+      case AppLifecycleState.detached:
+        if (suspendingCallBack != null) {
+          await suspendingCallBack();
+        }
+        break;
+    }
   }
 }

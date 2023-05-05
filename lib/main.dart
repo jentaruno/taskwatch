@@ -21,7 +21,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'TaskWatch',
       theme: ThemeData(
+          fontFamily: 'Switzer',
           brightness: Brightness.dark,
+          backgroundColor: Colors.black12,
           primaryIconTheme: const IconThemeData(color: Colors.teal),
           primaryColor: Colors.teal,
           primarySwatch: Colors.teal,

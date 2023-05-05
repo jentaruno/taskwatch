@@ -23,7 +23,7 @@ class TasksProvider with ChangeNotifier {
     List<String> taskNames = _taskList.map((e) => e.getName()).toList();
     int i = taskNames.indexOf(task.getName());
     if (i != -1) {
-      _taskList[i].addTime(task.getTime(0), getTodayDate());
+      _taskList[i].addTime(task.getTime(0), DateTime.now());
       await TasksDatabase.instance.update(_taskList[i]);
     } else {
       _taskList.insert(0, task);
