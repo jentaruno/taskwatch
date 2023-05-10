@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'tasks.dart';
 import 'database.dart';
 
+enum TaskListSort { lastModified }
+
 class TasksProvider with ChangeNotifier {
   List<Task> _taskList = [];
 
@@ -10,6 +12,18 @@ class TasksProvider with ChangeNotifier {
 
   TasksProvider() {
     loadTasks();
+  }
+
+  // Get tasks by last modified
+  List<Task> getSortedTaskList(TaskListSort tls) {
+    switch (tls) {
+      case TaskListSort.lastModified:
+        List<Task> sortedTaskList = _taskList;
+        // TODO: SORT BY LAST MODIFIED
+        sortedTaskList.sort((a, b) => b.getDate(0).compareTo(a.getDate(0)));
+        return sortedTaskList;
+      default: return _taskList;
+    }
   }
 
   // Load tasks from database

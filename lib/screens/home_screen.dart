@@ -49,7 +49,7 @@ class HomeApp extends StatelessWidget {
                       height: 40.0,
                     ),
                     TimeGrid(
-                      taskList: context.watch<TasksProvider>().taskList,
+                      taskList: context.watch<TasksProvider>().getSortedTaskList(TaskListSort.lastModified),
                     )
                   ],
                 )))));
@@ -98,7 +98,9 @@ class _TimeGridState extends State<TimeGrid> {
 
   @override
   Widget build(BuildContext context) {
-    itemsList = context.watch<TasksProvider>().taskList.map((e) => e.getName()).toList();
+    // TODO: SORT BY LAST MODIFIED
+    itemsList = widget.taskList.map((e) => e.getName()).toList();
+    //getSortedTaskList(TaskListSort.lastModified).map((e) => e.getName()).toList();
 
     return MultiProvider(
         providers: [
@@ -157,7 +159,9 @@ class _TimeGridState extends State<TimeGrid> {
                         context,
                         MaterialPageRoute(
                             builder: (context) => TaskScreen(
-                                task: context.watch<TasksProvider>().taskList[index],
+                                task: widget.taskList
+                                //getSortedTaskList(TaskListSort.lastModified)
+                                [index],
                               onDeleteTask: deleteTaskCallback,
                             ))),
                     child: GridTile(
@@ -170,8 +174,9 @@ class _TimeGridState extends State<TimeGrid> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
-                                  widget.taskList[index]
-                                      .getSpecialTime("fast"),
+                                  widget.taskList
+                                  //getSortedTaskList(TaskListSort.lastModified)
+                                  [index].getSpecialTime("fast"),
                                   style: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 36.0,
@@ -212,12 +217,6 @@ class _StopwatchState extends State<Stopwatch> {
   String time = "";
   String title = "";
   DateTime startTime = DateTime.now();
-
-  // WidgetsBinding.instance.addObserver(
-  // LifecycleEventHandler(resumeCallBack: () async => setState(() {
-  //   String actualTime = formatTimeDifference(startTime, DateTime.now());
-  // }))
-  // );
 
   // Start stopwatch
   void start() {

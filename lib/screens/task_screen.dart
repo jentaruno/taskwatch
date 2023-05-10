@@ -132,7 +132,7 @@ class _TaskScreenState extends State<TaskScreen> {
                               Row(
                                 children: [
                                   Text(
-                                    widget.task.getDate(index),
+                                    widget.task.getDateString(index),
                                     style: const TextStyle(
                                       fontSize: 20,
                                       color: Colors.white30,

@@ -91,7 +91,11 @@ class Task {
     }
   }
 
-  String getDate(int index) {
+  DateTime getDate(int index) {
+    return dates[index];
+  }
+
+  String getDateString(int index) {
     return dateToString(dates[index]);
   }
 
