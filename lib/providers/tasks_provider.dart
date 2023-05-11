@@ -22,7 +22,7 @@ class TasksProvider with ChangeNotifier {
         // TODO: SORT BY LAST MODIFIED
         sortedTaskList.sort((a, b) => b.getDate(0).compareTo(a.getDate(0)));
         return sortedTaskList;
-      default: return _taskList;
+      default: return [];
     }
   }
 

@@ -40,6 +40,7 @@ class HomeApp extends StatelessWidget {
         body: Padding(
             padding: const EdgeInsets.all(8.0),
             child: SingleChildScrollView(
+                keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -99,8 +100,7 @@ class _TimeGridState extends State<TimeGrid> {
   @override
   Widget build(BuildContext context) {
     // TODO: SORT BY LAST MODIFIED
-    itemsList = widget.taskList.map((e) => e.getName()).toList();
-    //getSortedTaskList(TaskListSort.lastModified).map((e) => e.getName()).toList();
+    itemsList = context.watch<TasksProvider>().getSortedTaskList(TaskListSort.lastModified).map((e) => e.getName()).toList();
 
     return MultiProvider(
         providers: [
@@ -168,7 +168,7 @@ class _TimeGridState extends State<TimeGrid> {
                         child: Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(8.0),
-                            color: Colors.white10,
+                            color: Colors.white12,
                           ),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -176,7 +176,7 @@ class _TimeGridState extends State<TimeGrid> {
                               Text(
                                   widget.taskList
                                   //getSortedTaskList(TaskListSort.lastModified)
-                                  [index].getSpecialTime("fast"),
+                                  [index].getSpecialTime(),
                                   style: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 36.0,

@@ -1,6 +1,39 @@
 import 'package:intl/intl.dart';
+import 'package:flutter/material.dart';
 
 const String tableTasks = "tasks";
+enum TaskSort { fast, long, average }
+extension TaskSortExtension on TaskSort {
+  Color get color {
+    switch (this) {
+      case TaskSort.fast: return Colors.greenAccent;
+      case TaskSort.long: return Colors.blueAccent;
+      case TaskSort.average: return Colors.orangeAccent;
+      default: return Colors.white12;
+    }
+  }
+
+  String get name {
+    switch (this) {
+      case TaskSort.fast: return "FASTEST";
+      case TaskSort.long: return "LONGEST";
+      case TaskSort.average: return "AVERAGE";
+      default: return "UNSORTED";
+    }
+  }
+
+  IconData get icon {
+    switch (this) {
+      case TaskSort.fast: return Icons.arrow_upward_rounded;
+      case TaskSort.long: return Icons.arrow_downward_rounded;
+      case TaskSort.average: return Icons.hourglass_empty_rounded;
+      default: return Icons.question_mark_rounded;
+    }
+  }
+
+}
+
+// HELPFUL PUBLIC FUNCTIONS
 
 // convert DateTime object to MM/dd/yyyy format string
 String dateToString(DateTime dt) {
@@ -34,11 +67,14 @@ class TaskFields {
   static const String dates = "dates";
 }
 
+// TASK CLASS
+
 class Task {
   final int? id;
   String title;
   List<String> times = [];
   List<DateTime> dates = [];
+  TaskSort taskSort = TaskSort.average;
 
   Task({this.id, required this.title, String? time}) {
     if (time != null) {
@@ -62,9 +98,9 @@ class Task {
     return times[index];
   }
 
-  String getSpecialTime(String type) {
-    switch (type) {
-      case "fast":
+  String getSpecialTime() {
+    switch (taskSort) {
+      case TaskSort.fast:
         String fastestTime = times[0];
         for (int i = 1; i < times.length; i++) {
           if (DateTime.parse('1970-01-01 ${times[i]}')
@@ -74,7 +110,17 @@ class Task {
           }
         }
         return fastestTime;
-      case "average":
+      case TaskSort.long:
+        String longestTime = times[0];
+        for (int i = 1; i < times.length; i++) {
+          if (DateTime.parse('1970-01-01 $longestTime')
+              .difference(DateTime.parse('1970-01-01 ${times[i]}'))
+              .isNegative) {
+            longestTime = times[i];
+          }
+        }
+        return longestTime;
+      case TaskSort.average:
         int totalSeconds = 0;
         for (String time in times) {
           DateTime dateTime = DateTime.parse('1970-01-01 $time');
