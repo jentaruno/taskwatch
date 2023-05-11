@@ -9,51 +9,54 @@ import 'task_screen.dart';
 
 // HOME SCREEN
 class HomeApp extends StatelessWidget {
-  const HomeApp({Key? key}) : super (key: key);
+  const HomeApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
         onTap: () {
-      FocusScopeNode currentFocus = FocusScope.of(context);
-      if (!currentFocus.hasPrimaryFocus) {
-        currentFocus.unfocus();
-      }
-    },
-    child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          leading: Padding(
-            padding: const EdgeInsets.only(
-              left: 16.0,
-              top: 12.0,
-              bottom: 12.0,
+          FocusScopeNode currentFocus = FocusScope.of(context);
+          if (!currentFocus.hasPrimaryFocus) {
+            currentFocus.unfocus();
+          }
+        },
+        child: Scaffold(
+            appBar: AppBar(
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              leading: Padding(
+                padding: const EdgeInsets.only(
+                  left: 16.0,
+                  top: 12.0,
+                  bottom: 12.0,
+                ),
+                child: Image.asset(
+                  "assets/images/appicon.png",
+                ),
+              ),
+              centerTitle: false,
+              title: const Text("TaskWatch"),
             ),
-            child: Image.asset(
-              "assets/images/appicon.png",
-            ),
-          ),
-          centerTitle: false,
-          title: const Text("TaskWatch"),
-        ),
-        body: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: SingleChildScrollView(
-                keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const Stopwatch(),
-                    const SizedBox(
-                      height: 40.0,
-                    ),
-                    TimeGrid(
-                      taskList: context.watch<TasksProvider>().getSortedTaskList(TaskListSort.lastModified),
-                    )
-                  ],
-                )))));
+            body: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: SingleChildScrollView(
+                    keyboardDismissBehavior:
+                        ScrollViewKeyboardDismissBehavior.onDrag,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        const Stopwatch(),
+                        const SizedBox(
+                          height: 40.0,
+                        ),
+                        TimeGrid(
+                          taskList: context
+                              .watch<TasksProvider>()
+                              .getSortedTaskList(TaskListSort.lastModified),
+                        )
+                      ],
+                    )))));
   }
 }
 
@@ -93,6 +96,10 @@ class _TimeGridState extends State<TimeGrid> {
     setState(() => isLoading = false);
   }
 
+  void handleChangeTaskSort(int index) {
+    context.read<TasksProvider>().changeTaskSort(widget.taskList[index]);
+  }
+
   deleteTaskCallback(Task task) {
     context.read<TasksProvider>().deleteTask(task);
   }
@@ -100,101 +107,155 @@ class _TimeGridState extends State<TimeGrid> {
   @override
   Widget build(BuildContext context) {
     // TODO: SORT BY LAST MODIFIED
-    itemsList = context.watch<TasksProvider>().getSortedTaskList(TaskListSort.lastModified).map((e) => e.getName()).toList();
+    itemsList = context
+        .watch<TasksProvider>()
+        .getSortedTaskList(TaskListSort.lastModified)
+        .map((e) => e.getName())
+        .toList();
 
     return MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (_) => TasksProvider()),
         ],
-        child:
-        isLoading
+        child: isLoading
             ? const CircularProgressIndicator()
-            :
-        Column(children: [
-          TextField(
-                controller: _searchQuery,
-                focusNode: _textFocusNode,
-                cursorColor: Colors.white,
-                decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.only(top: 5.0, bottom: 5.0),
-                    prefixIcon: const Icon(Icons.search),
-                    prefixIconColor: Colors.white30,
-                    hintText: "Search tasks",
-                    hintStyle: const TextStyle(color: Colors.white12),
-                    filled: true,
-                    fillColor: Colors.black26,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                      borderSide: BorderSide.none,
-                    )),
-                onChanged: (value) {
-                  setState(() {
-                    itemsListSearch = itemsList
-                        .where((element) =>
-                        element.toLowerCase().contains(value.toLowerCase()))
-                        .toList();
-                    if (_searchQuery.text.isNotEmpty &&
-                        itemsListSearch.isEmpty) {}
-                  });
-                },
-              ),
-          const SizedBox(height: 10),
-          _searchQuery.text.isNotEmpty && itemsListSearch.isEmpty
-              ? const Text("No results found")
-              : GridView.builder(
-              gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                maxCrossAxisExtent: 300,
-                childAspectRatio: (5 / 3),
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 10,
-              ),
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: _searchQuery.text.isNotEmpty
-                  ? itemsListSearch.length
-                  : itemsList.length,
-              itemBuilder: (context, index) {
-                return GestureDetector(
-                    onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => TaskScreen(
-                                task: widget.taskList
-                                //getSortedTaskList(TaskListSort.lastModified)
-                                [index],
-                              onDeleteTask: deleteTaskCallback,
-                            ))),
-                    child: GridTile(
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8.0),
-                            color: Colors.white12,
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                  widget.taskList
-                                  //getSortedTaskList(TaskListSort.lastModified)
-                                  [index].getSpecialTime(),
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 36.0,
-                                    fontWeight: FontWeight.w600,
-                                  )),
-                              Text(
-                                  _searchQuery.text.isNotEmpty
-                                      ? itemsListSearch[index]
-                                      : itemsList[index],
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 16.0,
-                                  )),
-                            ],
-                          ),
-                        )));
-              }),
-        ]));
+            : Column(children: [
+                TextField(
+                  controller: _searchQuery,
+                  focusNode: _textFocusNode,
+                  cursorColor: Colors.white,
+                  decoration: InputDecoration(
+                      contentPadding:
+                          const EdgeInsets.only(top: 5.0, bottom: 5.0),
+                      prefixIcon: const Icon(Icons.search),
+                      prefixIconColor: Colors.white30,
+                      hintText: "Search tasks",
+                      hintStyle: const TextStyle(color: Colors.white12),
+                      filled: true,
+                      fillColor: Colors.black26,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                        borderSide: BorderSide.none,
+                      )),
+                  onChanged: (value) {
+                    setState(() {
+                      itemsListSearch = itemsList
+                          .where((element) => element
+                              .toLowerCase()
+                              .contains(value.toLowerCase()))
+                          .toList();
+                      if (_searchQuery.text.isNotEmpty &&
+                          itemsListSearch.isEmpty) {}
+                    });
+                  },
+                ),
+                const SizedBox(height: 10),
+                _searchQuery.text.isNotEmpty && itemsListSearch.isEmpty
+                    ? const Text("No results found")
+                    : GridView.builder(
+                        gridDelegate:
+                            const SliverGridDelegateWithMaxCrossAxisExtent(
+                          maxCrossAxisExtent: 300,
+                          childAspectRatio: (2 / 1),
+                          crossAxisSpacing: 10,
+                          mainAxisSpacing: 10,
+                        ),
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: _searchQuery.text.isNotEmpty
+                            ? itemsListSearch.length
+                            : itemsList.length,
+                        itemBuilder: (context, index) {
+                          return GestureDetector(
+                              onTap: () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => TaskScreen(
+                                            task: context
+                                                .watch<TasksProvider>()
+                                                .taskList[index],
+                                            //widget.taskList[index],
+                                            //getSortedTaskList(TaskListSort.lastModified)
+                                            onDeleteTask: deleteTaskCallback,
+                                          ))),
+                              child: GridTile(
+                                  child: Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius:
+                                            BorderRadius.circular(8.0),
+                                        color: Colors.white12,
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          Padding(
+                                            padding: EdgeInsets.only(
+                                              left: 16.0,
+                                              right: 8.0,
+                                            ),
+                                            child: Container(
+                                              width: 48.0,
+                                              height: 48.0,
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: widget.taskList[index]
+                                                    .taskSort.color
+                                                    .withOpacity(0.3),
+                                              ),
+                                              child: InkWell(
+                                                onTap: () =>
+                                                    handleChangeTaskSort(index),
+                                                child: Icon(
+                                                  widget.taskList[index]
+                                                      .taskSort.icon,
+                                                  size: 24.0,
+                                                  color: widget.taskList[index]
+                                                      .taskSort.color,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                  widget.taskList
+                                                      //getSortedTaskList(TaskListSort.lastModified)
+                                                      [index]
+                                                      .getSpecialTime(),
+                                                  style: const TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 24.0,
+                                                    fontWeight: FontWeight.w600,
+                                                  )),
+                                              Text(
+                                                  _searchQuery.text.isNotEmpty
+                                                      ? itemsListSearch[index]
+                                                      : itemsList[index],
+                                                  style: const TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 14.0,
+                                                  )),
+                                            ],
+                                          ),
+                                        ],
+                                      )
+                                      // Stack(
+                                      //   alignment: Alignment.center,
+                                      //   children: [
+                                      //
+                                      //     Positioned(
+                                      //       top: 0,
+                                      //       right: 0,
+                                      //       child:
+                                      //     )
+                                      //   ],
+                                      // ),
+                                      )));
+                        }),
+              ]));
   }
 }
 
@@ -293,7 +354,6 @@ class _StopwatchState extends State<Stopwatch> {
         children: [
           SizedBox(
             width: 300.0,
-
             child: Form(
               key: _formKey,
               child: TextFormField(
@@ -336,54 +396,55 @@ class _StopwatchState extends State<Stopwatch> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text("$digitHours:$digitMinutes:$digitSeconds",
-                      style: const TextStyle(
-                        fontSize: 70.0,
-                        fontWeight: FontWeight.w600,
-                      ),
+                  Text(
+                    "$digitHours:$digitMinutes:$digitSeconds",
+                    style: const TextStyle(
+                      fontSize: 70.0,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Expanded(
                           child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              IconButton(
-                                onPressed: reset,
-                                color: Theme.of(context).colorScheme.primary,
-                                icon: const Icon(Icons.restart_alt),
-                                iconSize: 30.0,
-                              ),
-                              (started)
-                                  ? IconButton(
-                                onPressed: pause,
-                                color: Theme.of(context).colorScheme.primary,
-                                icon: const Icon(Icons.pause),
-                                iconSize: 60.0,
-                              )
-                                  : IconButton(
-                                onPressed: () {
-                                  if (_formKey.currentState!.validate()) {
-                                    start();
-                                  }
-                                },
-                                color: Theme.of(context).colorScheme.primary,
-                                icon: const Icon(Icons.play_arrow),
-                                iconSize: 60.0,
-                              ),
-                              IconButton(
-                                onPressed: () {
-                                  if (_formKey.currentState!.validate()) {
-                                    recordTime();
-                                  }
-                                },
-                                color: Theme.of(context).colorScheme.primary,
-                                icon: const Icon(Icons.flag),
-                                iconSize: 30.0,
-                              ),
-                            ],
-                          )),
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          IconButton(
+                            onPressed: reset,
+                            color: Theme.of(context).colorScheme.primary,
+                            icon: const Icon(Icons.restart_alt),
+                            iconSize: 30.0,
+                          ),
+                          (started)
+                              ? IconButton(
+                                  onPressed: pause,
+                                  color: Theme.of(context).colorScheme.primary,
+                                  icon: const Icon(Icons.pause),
+                                  iconSize: 60.0,
+                                )
+                              : IconButton(
+                                  onPressed: () {
+                                    if (_formKey.currentState!.validate()) {
+                                      start();
+                                    }
+                                  },
+                                  color: Theme.of(context).colorScheme.primary,
+                                  icon: const Icon(Icons.play_arrow),
+                                  iconSize: 60.0,
+                                ),
+                          IconButton(
+                            onPressed: () {
+                              if (_formKey.currentState!.validate()) {
+                                recordTime();
+                              }
+                            },
+                            color: Theme.of(context).colorScheme.primary,
+                            icon: const Icon(Icons.flag),
+                            iconSize: 30.0,
+                          ),
+                        ],
+                      )),
                     ],
                   ),
                 ]),

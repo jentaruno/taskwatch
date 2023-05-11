@@ -59,6 +59,14 @@ class TasksProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> changeTaskSort(Task task) async {
+    int i = _taskList.indexOf(task);
+    int enumIndex = task.taskSort.index;
+    int nextEnumIndex = (enumIndex + 1) % TaskSort.values.length;
+    _taskList[i].taskSort = TaskSort.values[nextEnumIndex];
+    notifyListeners();
+  }
+
   Future<void> deleteTaskTime(Task task, int index) async {
     int i = _taskList.indexOf(task);
     _taskList[i].deleteTime(index);
